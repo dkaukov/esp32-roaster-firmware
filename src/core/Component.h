@@ -31,6 +31,7 @@ enum {
   MESSAGE_COMMAND,
   MESSAGE_PUBLISH,
   MESSAGE_GET_INFO,
+  MESSAGE_ART_COMMAND,
 };
 
 enum {
@@ -53,7 +54,11 @@ typedef enum {
   COMMAND_TYPE_ACTUATE,
   COMMAND_TYPE_CONFIG,
   COMMAND_TYPE_RESTART,
+  COMMAND_TYPE_ARTESIAN,
   COMMAND_TYPE_GET_DATA,
+  COMMAND_TYPE_ON,
+  COMMAND_TYPE_OFF,
+  COMMAND_SET_CONTROL_PARAMS,
   COMMAND_TYPE_UNKNOWN,
 } command_type_t;
 
@@ -92,13 +97,21 @@ struct MessageGetInfo : public etl::message<MESSAGE_GET_INFO> {
   JsonObject &doc;
 };
 
+struct MessageArtCommand : public etl::message< MESSAGE_ART_COMMAND> {
+  MessageArtCommand(const command_type_t type, const JsonObject &doc_, const JsonObject &reply_) : type(type), doc(doc_), reply(reply_) {};
+  const command_type_t type;
+  const JsonObject &doc;
+  const JsonObject &reply;
+};
+
+
 typedef etl::message_bus<16> MessageBus_t;
 typedef etl::message_timer<TIMER_TYPE_COUNT> MessageTimer_t;
 
 static MessageBus_t bus;
 static MessageTimer_t timer;
 
-class Component : public etl::message_router<Component, MessageLoop, MessageGetStatus, MessageSetConfig, MessageTimer, MessageCommand, MessagePublish, MessageGetInfo> {
+class Component : public etl::message_router<Component, MessageLoop, MessageGetStatus, MessageSetConfig, MessageTimer, MessageCommand, MessagePublish, MessageGetInfo, MessageArtCommand> {
 private:
   MessageBus_t *_bus;
 
@@ -118,6 +131,15 @@ protected:
     }
     if (cmd == "getData") {
       return COMMAND_TYPE_GET_DATA;
+    }
+    if (cmd == "on") {
+      return COMMAND_TYPE_ON;
+    }
+    if (cmd == "off") {
+      return COMMAND_TYPE_OFF;
+    }
+    if (cmd == "setControlParams") {
+      return COMMAND_SET_CONTROL_PARAMS;
     }
     return COMMAND_TYPE_UNKNOWN;
   }
@@ -162,11 +184,16 @@ public:
   void on_receive(etl::imessage_router &sender, const MessageGetInfo &msg) { getInfo(msg.doc); }
   void on_receive(const MessageGetInfo &msg) { getInfo(msg.doc); };
 
+  void on_receive(etl::imessage_router &sender, const MessageArtCommand &msg) { on_receive(msg); }
+  void on_receive(const MessageArtCommand &msg) { onArtCommand(msg.type, msg.doc, msg.reply); };
+
   virtual void getStatus(JsonObject &doc) const {};
   virtual void setConfig(const JsonObject &doc){};
   virtual void onCommand(command_type_t type, const JsonObject &doc){};
   virtual void onPublish(const char *topic, const JsonDocument &doc){};
   virtual void getInfo(JsonObject &doc) const {};
+
+  virtual void onArtCommand(command_type_t type, const JsonObject &doc, const JsonObject &reply){};
 
   virtual void init(){};
   virtual void loop(){};
@@ -199,6 +226,10 @@ public:
   };
   void getGlobalInfo(JsonObject &doc) const {
     MessageGetInfo msg = {doc};
+    _bus->receive(msg);
+  };
+  virtual void broadcastArtCommand(command_type_t type, const JsonObject &doc, const JsonObject &reply) {
+    MessageArtCommand msg = {type, doc, reply};
     _bus->receive(msg);
   };
 };

@@ -36,7 +36,7 @@ private:
 
 public:
   BTProbe()
-      : Sensor(Core::COMPONENT_CLASS_SENSOR, "BTProbe"), 
+      : Sensor(Core::COMPONENT_CLASS_SENSOR, "BT"), 
       _adc(getAdc(SS)){};
 
   void start() {
@@ -99,6 +99,13 @@ public:
   virtual void setConfig(const JsonObject &doc) override {
     Sensor::setConfig(doc);
     auto node = doc["sensor"][_name];
+  };
+
+  virtual void onArtCommand(Core::command_type_t type, const JsonObject &doc, const JsonObject &reply) override {
+    if (type == Core::COMMAND_TYPE_GET_DATA) {
+      auto node = reply["data"];
+      node[_name] = _Tlut;
+    }  
   };
 };
 

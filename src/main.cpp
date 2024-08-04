@@ -46,7 +46,7 @@ PID ESPPID(&currentTemp, &gOutputPwr, &gTargetTemp, gP, gI, gD, DIRECT);
 
 String deviceId;
 Core::ComponentManager mgr;
-PWMrelay heaterRelay(2, true, 5000);
+PWMrelay heaterRelay(12, true, 5000);
 Actuators::Heater heater("heater", 0.0, 1.0, &heaterRelay);
 Sensor::BTProbe bt;
 
@@ -163,7 +163,7 @@ void setup() {
   heater.init();
   bt.init();
   mgr.init();
-  heater.setValue(30);
+  heater.setValue(0);
 }
 
 void loop() {

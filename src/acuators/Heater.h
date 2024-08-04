@@ -10,6 +10,7 @@ class Heater : public Actuator {
 protected:
 
   uint8_t _value;
+  bool _on = false;
 
   PWMrelay *_pwm;
 
@@ -35,11 +36,15 @@ public:
   };
 
   virtual int32_t setValue(int32_t pos) override {
-    uint8_t val = constrain(pos, _min, _max);
-    uint8_t oldVal = _value;
-    _pwm->setPWM(val);
-    _value = val;
-    return val - oldVal;
+    if (_on) {
+      uint8_t val = constrain(pos, _min, _max);
+      uint8_t oldVal = _value;
+      _pwm->setPWM(val);
+      _value = val;
+      return val - oldVal;
+    } else {
+      return 0;
+    }
   };
 
   virtual int32_t getValue() const override { return _value; };
@@ -69,6 +74,32 @@ public:
 
   virtual void loop() override {
     _pwm->tick();
+  };
+
+  virtual void onArtCommand(Core::command_type_t type, const JsonObject &doc, const JsonObject &reply) override {
+    if (type == Core::COMMAND_TYPE_GET_DATA) {
+      auto node = reply["data"];
+      node[_name] = _value;
+    }
+    if (type == Core::COMMAND_TYPE_ON) {
+      _on = true;
+      setValue(1);
+      auto node = reply["data"];
+      node[_name] = _value;
+    }  
+    if (type == Core::COMMAND_TYPE_OFF) {
+      setValue(0);
+      _on = false;
+      auto node = reply["data"];
+      node[_name] = _value;
+    }
+    if (type == Core::COMMAND_SET_CONTROL_PARAMS) {
+       if (!doc["data"][_name].isNull()) {
+        setValue(doc["data"][_name]);
+        auto node = reply["data"];
+        node[_name] = _value;
+       }
+    }    
   };
 
 };

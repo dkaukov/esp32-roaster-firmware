@@ -100,9 +100,7 @@ protected:
   virtual void handleRequest(uint32_t clientId, const JsonObject &doc) {
     String response;
 
-    String output;
-    serializeJson(doc, output);
-    _LOGW("WS", "request: %s", output.c_str());
+
 
     if (!doc["command"].isNull()) {
       String cmd = doc["command"];
@@ -113,8 +111,29 @@ protected:
       }
       auto c = parseCommand(cmd);
       if (c != Core::COMMAND_TYPE_UNKNOWN) {
-        broadcastCommand(c, doc);
-        sendStatus(clientId);
+        if (c <= Core::COMMAND_TYPE_ARTESIAN) {
+          // reply to web-ui
+          broadcastCommand(c, doc);
+          sendStatus(clientId);
+        } else {
+          String input;
+          serializeJson(doc, input);
+          _LOGW("WS", ">>>: %s", input.c_str());
+          // reply to arthesian
+          JsonDocument docReply;
+          JsonObject reply = docReply.to<JsonObject>();
+          broadcastArtCommand(c, doc, reply);
+          reply["id"] = doc["id"];
+          reply["roasterID"] = doc["roasterID"];
+          String output;
+          serializeJson(docReply, output);
+          if (clientId == 0) {
+            _artisianws->textAll(output);
+          } else {
+            _artisianws->text(clientId, output);
+          }
+          _LOGW("WS", "<<<: %s", output.c_str());
+        }
       } else {
         response = "{\"error\":\"Unknown command\"}";
         _ws->text(clientId, response);
