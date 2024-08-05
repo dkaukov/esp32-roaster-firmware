@@ -116,9 +116,6 @@ protected:
           broadcastCommand(c, doc);
           sendStatus(clientId);
         } else {
-          String input;
-          serializeJson(doc, input);
-          _LOGW("WS", ">>>: %s", input.c_str());
           // reply to arthesian
           JsonDocument docReply;
           JsonObject reply = docReply.to<JsonObject>();
@@ -132,7 +129,6 @@ protected:
           } else {
             _artisianws->text(clientId, output);
           }
-          _LOGW("WS", "<<<: %s", output.c_str());
         }
       } else {
         response = "{\"error\":\"Unknown command\"}";
@@ -144,7 +140,7 @@ protected:
 public:
   WEB() : Core::Component(Core::COMPONENT_CLASS_NETWORK) {
     static AsyncWebServer server(80);
-    _msg_queue = xQueueCreate(32, sizeof(msg_packet_t));
+    _msg_queue = xQueueCreate(64, sizeof(msg_packet_t));
     _server = &server;
     _ws = new AsyncWebSocket("/dashws");
     _artisianws = new AsyncWebSocket("/artisianws");

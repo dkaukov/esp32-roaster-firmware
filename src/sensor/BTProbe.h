@@ -65,7 +65,8 @@ public:
       }
       _adc.clearFault();
     } else {
-      _Tlut	= PT100.celsius(_adc.getResistance(RREF));
+      auto x	= PT100.celsius(_adc.getResistance(RREF));
+      _Tlut += 0.1 * (x - _Tlut);
     }
   }
 
