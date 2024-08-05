@@ -146,8 +146,7 @@ public:
     _artisianws = new AsyncWebSocket("/artisianws");
     _server->on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
       // respond with the compressed frontend
-      AsyncWebServerResponse *response =
-          request->beginResponse_P(200, "text/html", DASH_HTML, DASH_HTML_SIZE);
+      AsyncWebServerResponse *response = request->beginResponse(200, "text/html", DASH_HTML, DASH_HTML_SIZE);
       response->addHeader("Content-Encoding", "gzip");
       request->send(response);
     });
