@@ -15,7 +15,6 @@
 #include <ArduinoOTA.h>
 #include <esp_task_wdt.h>
 #include <esp32-hal-sigmadelta.h>
-#include <SlowPWM.h>
 #include <PWMrelay.h>
 
 #define S_P 91.0
