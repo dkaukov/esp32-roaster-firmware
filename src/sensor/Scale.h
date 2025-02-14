@@ -47,7 +47,7 @@ public:
         if (_conversionnCount == 0) {
           _W = _adc.getData();
         } else {
-          _W += 0.05 * (_adc.getData() - _W);
+          _W += 0.1 * (_adc.getData() - _W);
         }
         _conversionnCount++;
       }
