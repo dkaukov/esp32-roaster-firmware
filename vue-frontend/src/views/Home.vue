@@ -2,30 +2,32 @@
   <div>
     <div class="container" v-if="true">
       <div class="section">
+
         <div class="columns is-vcentered">
           <div class="column">
             <div class="ml-4">
               <status-card :key="'cardid'" :card="home.status"></status-card>
             </div>
           </div>
-          <div class="column is-two-thirds has-text-centered">
-            <linear-gauge :value="home.swr.value" :options="home.swr" ref="swr"></linear-gauge>
-            <linear-gauge :value="home.pwr.value" :options="home.pwr" ref="pwr" style="margin-top: -118px"></linear-gauge>
-          </div>
         </div>
+
+
         <div class="columns is-gapless">
-          <div class="column has-text-centered" v-if="home.C1.visible">
-            <radial-gauge :options="home.C1" :value="home.C1.value" ref="c1"></radial-gauge>
-          </div>
-          <div class="column has-text-centered" v-if="home.L.visible">
-            <radial-gauge :options="home.L" :value="home.L.value" ref="l"></radial-gauge>
-          </div>
-          <div class="column has-text-centered" v-if="home.C2.visible">
-            <radial-gauge :options="home.C2" :value="home.C2.value" ref="c2"></radial-gauge>
+          <div class="column has-text-centered">
+              <radial-gauge :options="home.BT" :value="home.BT.value" ref="bt"></radial-gauge>
+            </div>
+            <div class="column has-text-centered">
+              <radial-gauge :options="home.ET" :value="home.ET.value" ref="et"></radial-gauge>
+            </div>
+            <div class="column has-text-centered">  
+              <radial-gauge :options="home.W" :value="home.W.value" ref="w"></radial-gauge>
           </div>
         </div>
+
       </div>
+    
     </div>
+
     <div class="container" v-else>
       <div class="section">
         <div class="row">
@@ -60,7 +62,7 @@ import StatusCard from "@/components/StatusCard.vue";
 //import BarChart from '@/components/BarChart.vue';
 //import LineChart from '@/components/LineChart.vue';
 
-import LinearGauge from "vue-canvas-gauges/src/LinearGauge";
+//import LinearGauge from "vue-canvas-gauges/src/LinearGauge";
 import RadialGauge from "vue-canvas-gauges/src/RadialGauge";
 
 export default {
@@ -77,57 +79,14 @@ export default {
     //ButtonCard,
     //SliderCard,
     //BarChart,
-    LinearGauge,
+    //LinearGauge,
     RadialGauge,
     //LineChart
-  },
-
-  data() {
-    return {
-      chart: {
-        id: "",
-        type: "line",
-        name: "name",
-        x_axis: [1, 2, 3, 4, 5],
-        y_axis: [1, 2, 3, 4, 5],
-      },
-    };
   },
 
   methods: {},
 
   mounted() {
-    if (this.$refs.c1) {
-      this.$refs.c1.$watch("value", function (newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.chart._value = newVal;
-        }
-      });
-    }
-    if (this.$refs.c2) {
-      this.$refs.c2.$watch("value", function (newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.chart._value = newVal;
-        }
-      });
-    }
-    if (this.$refs.l) {
-      this.$refs.l.$watch("value", function (newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.chart._value = newVal;
-        }
-      });
-    }
-    this.$refs.swr.$watch("value", function (newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.chart._value = newVal;
-      }
-    });
-    this.$refs.pwr.$watch("value", function (newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.chart._value = newVal;
-      }
-    });
   },
 };
 </script>

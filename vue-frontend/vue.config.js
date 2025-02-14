@@ -1,26 +1,7 @@
-const WebpackShellPlugin = require('webpack-shell-plugin-next');
+const WebpackShellPlugin = require('webpack-shell-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const path = require('path');
 
 module.exports = {
-  chainWebpack: (config) => {
-    config.resolve.alias.set('vue', '@vue/compat')
-    config.optimization.delete('splitChunks')
-
-    config.module
-      .rule('vue')
-      .use('vue-loader')
-      .tap((options) => {
-        return {
-          ...options,
-          compilerOptions: {
-            compatConfig: {
-              MODE: 2
-            }
-          }
-        }
-      })
-  },
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'scss',
@@ -28,6 +9,7 @@ module.exports = {
     }
   },
 
+  baseUrl: undefined,
   outputDir: undefined,
   assetsDir: undefined,
   runtimeCompiler: undefined,
@@ -35,6 +17,9 @@ module.exports = {
   parallel: undefined,
   css: { extract: false },
   filenameHashing: false,
+  chainWebpack: config => {
+    config.optimization.delete('splitChunks')
+  },
   configureWebpack: {
       plugins: [
         new BundleAnalyzerPlugin({ analyzerMode: (process.env.NODE_ENV !== "production")?'disabled':'static'}),

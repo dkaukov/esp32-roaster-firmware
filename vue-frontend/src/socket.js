@@ -4,7 +4,7 @@ import Vue from "vue"
 let host = "ws://" + document.location.host + "/dashws";
 
 if (process.env.NODE_ENV !== 'production') {
-  host = "ws://rst-280000.sphere.home/dashws"; // For Local Testing via npm run serve
+  host = "ws://rst-544b84.sphere.home/dashws"; // For Local Testing via npm run serve
 }
 
 const socket = new WebSocket(host);

@@ -50,6 +50,85 @@ export default {
         lines: "",
       },
       home: {
+        chart: {
+          id: "Bt",
+          type: "line",
+          name: "Bt",
+          x_axis: [],
+          y_axis: [],
+        },
+        BT: {
+          id: "Bt",
+          value: 20.0,
+          rawValue: 255,
+          width: 300,
+          height: 300,
+          title: "Bt",
+          fontTitleWeight: "bold",
+          units: "\u2103",
+          minValue: 10.0,
+          maxValue: 250.0,
+          majorTicks: this.getTicks(10.0, 250.0, 8),
+          highlights: [],
+          minorTicks: 20,
+          strokeTicks: true,
+          animation: true,
+          animationRule: "linear",
+          animationDuration: 200,
+          animatedValue: false,
+          visible: false,
+          step: 1,
+          isReady: false,
+          isInverted: false,
+        },  
+        ET: {
+          id: "Et",
+          value: 20.0,
+          rawValue: 255,
+          width: 300,
+          height: 300,
+          title: "Et",
+          fontTitleWeight: "bold",
+          units: "\u2103",
+          minValue: 10.0,
+          maxValue: 250.0,
+          majorTicks: this.getTicks(10.0, 250.0, 8),
+          highlights: [],
+          minorTicks: 20,
+          strokeTicks: true,
+          animation: true,
+          animationRule: "linear",
+          animationDuration: 200,
+          animatedValue: false,
+          visible: false,
+          step: 1,
+          isReady: false,
+          isInverted: false,
+        },
+        W: {
+          id: "W",
+          value: 0.0,
+          rawValue: 255,
+          width: 300,
+          height: 300,
+          title: "W",
+          fontTitleWeight: "bold",
+          units: "g",
+          minValue: 0.0,
+          maxValue: 500.0,
+          majorTicks: this.getTicks(0.0, 250.0, 8),
+          highlights: [],
+          minorTicks: 20,
+          strokeTicks: true,
+          animation: true,
+          animationRule: "linear",
+          animationDuration: 200,
+          animatedValue: false,
+          visible: false,
+          step: 1,
+          isReady: false,
+          isInverted: false,
+        },        
         C1: {
           id: "C1",
           value: 1304.0,
@@ -180,11 +259,32 @@ export default {
         },
         status: {
           symbol: "danger",
-          name: "ATU status",
+          name: "Roaster status",
           value: "Booting up",
         },
       },
       control: {
+        chartBt: {
+          id: "Bt",
+          type: "line",
+          name: "Bt",
+          x_axis: [],
+          y_axis: [],
+        },
+        chartEt: {
+          id: "Et",
+          type: "line",
+          name: "Et",
+          x_axis: [],
+          y_axis: [],
+        },
+        chartW: {
+          id: "W",
+          type: "line",
+          name: "W",
+          x_axis: [],
+          y_axis: [],
+        },
         C1: {
           id: "C1",
           value: 1304.0,
@@ -420,28 +520,37 @@ export default {
         this.stats.maxAllocHeap = json.system.maxAllocHeap;
         this.stats.stackHighWaterMark = json.system.stackHighWaterMark;
         this.stats.wifiSignal = json.system.rssi;
-        this.home.C1.value = (json.actuator.C1 || {}).phValue;
-        this.home.C2.value = (json.actuator.C2 || {}).phValue;
-        this.home.L.value = (json.actuator.L || {}).phValue;
+        this.home.BT.value = (json.sensor.BT || {}).Tlut;
+        this.home.ET.value = (json.sensor.ET || {}).Tlut;
+        this.home.W.value = (json.sensor.scale || {}).W;
+        
+        const now = Date.now();
+        const fiveMinutesAgo = now - 5 * 60 * 1000;
+        this.control.chartBt.x_axis.push(Date.now());
+        this.control.chartBt.y_axis.push((json.sensor.BT || {}).Tlut);
+        this.control.chartEt.x_axis.push(Date.now());
+        this.control.chartEt.y_axis.push((json.sensor.ET || {}).Tlut);
+        // Keep only the last 5 minutes of data
+        this.control.chartBt.x_axis = this.control.chartBt.x_axis.filter(timestamp => timestamp >= fiveMinutesAgo);
+        this.control.chartBt.y_axis = this.control.chartBt.y_axis.slice(-this.control.chartBt.x_axis.length);
+        this.control.chartEt.x_axis = this.control.chartEt.x_axis.filter(timestamp => timestamp >= fiveMinutesAgo);
+        this.control.chartEt.y_axis = this.control.chartEt.y_axis.slice(-this.control.chartEt.x_axis.length);
+
         this.control.C1.value = (json.actuator.C1 || {}).phValue;
-        this.control.C2.value = (json.actuator.C2 || {}).phValue;
-        this.control.L.value = (json.actuator.L || {}).phValue;
-        this.home.C1.rawValue = (json.actuator.C1 || {}).value;
-        this.home.C2.rawValue = (json.actuator.C2 || {}).value;
-        this.home.L.rawValue = (json.actuator.L || {}).value;
-        this.control.C1.rawValue = (json.actuator.C1 || {}).value;
-        this.control.C2.rawValue = (json.actuator.C2 || {}).value;
-        this.control.L.rawValue = (json.actuator.L || {}).value;
-        this.home.C1.isReady = (json.actuator.C1 || {}).isReady;
-        this.home.C2.isReady = (json.actuator.C2 || {}).isReady;
-        this.home.L.isReady = (json.actuator.L || {}).isReady;
-        this.control.C1.isReady = (json.actuator.C1 || {}).isReady;
-        this.control.C2.isReady = (json.actuator.C2 || {}).isReady;
-        this.control.L.isReady = (json.actuator.L || {}).isReady;
-        this.home.pwr.value = this.constrain(json.sensor.SWRMeterAds1115Ad8310.fwd || 0, this.home.pwr.minValue, this.home.pwr.maxValue);
-        this.home.swr.value = this.constrain(json.sensor.SWRMeterAds1115Ad8310.swr || 1, this.home.swr.minValue, this.home.swr.maxValue);
-        this.control.pwr.value = this.constrain(json.sensor.SWRMeterAds1115Ad8310.fwd || 0, this.control.pwr.minValue, this.control.pwr.maxValue);
-        this.control.swr.value = this.constrain(json.sensor.SWRMeterAds1115Ad8310.swr || 1, this.control.swr.minValue, this.control.swr.maxValue);
+        //this.control.C2.value = (json.actuator.C2 || {}).phValue;
+        //this.control.L.value = (json.actuator.L || {}).phValue;
+        //this.home.C1.rawValue = (json.actuator.C1 || {}).value;
+        //this.home.C2.rawValue = (json.actuator.C2 || {}).value;
+        //this.home.L.rawValue = (json.actuator.L || {}).value;
+        //this.control.C1.rawValue = (json.actuator.C1 || {}).value;
+        //this.control.C2.rawValue = (json.actuator.C2 || {}).value;
+        //this.control.L.rawValue = (json.actuator.L || {}).value;
+        //this.home.C1.isReady = (json.actuator.C1 || {}).isReady;
+        //this.home.C2.isReady = (json.actuator.C2 || {}).isReady;
+        //this.home.L.isReady = (json.actuator.L || {}).isReady;
+        //this.control.C1.isReady = (json.actuator.C1 || {}).isReady;
+        //this.control.C2.isReady = (json.actuator.C2 || {}).isReady;
+        //this.control.L.isReady = (json.actuator.L || {}).isReady;
         this.home.status.value = json.atu.state;
         let upTime = new Date(0);
         upTime.setSeconds(json.system.upTime || 0);

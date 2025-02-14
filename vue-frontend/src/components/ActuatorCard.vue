@@ -61,7 +61,6 @@ export default {
       this.msg = {
         actuator: {},
       };
-      // eslint-disable-next-line
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].pct = this.pct / 1000;
@@ -71,7 +70,6 @@ export default {
       this.msg = {
         actuator: {},
       };
-      // eslint-disable-next-line
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].calibrate = true;
@@ -81,7 +79,6 @@ export default {
       this.msg = {
         actuator: {},
       };
-      // eslint-disable-next-line
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].value = this.actuator.rawValue + this.actuator.step;
@@ -91,7 +88,6 @@ export default {
       this.msg = {
         actuator: {},
       };
-      // eslint-disable-next-line vue/no-mutating-props
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].value = this.actuator.rawValue - this.actuator.step;

@@ -1,5 +1,5 @@
 <template>
-  <div class="column is-12-mobile is-6-tablet is-5-desktop">
+  <div class="column">
     <div class="card">
       <span class="dot" :class="{ active: activity }"></span>
       <div class="card-content">
@@ -37,17 +37,27 @@ export default {
 
   data() {
     return {
-      activity: true,
+      activity: false,
       options: {
+        animation: false,
         responsive: true,
         aspectRatio: 1,
         height: 200,
         legend: {
           display: false,
         },
+        downsample: {
+          enabled: true,
+          threshold: 100 // max number of points to display per dataset
+        },
         scales: {
           xAxes: [
             {
+              type: "time",
+              time: {
+                unit: "minute"
+
+              },
               gridLines: {
                 display: true,
               },

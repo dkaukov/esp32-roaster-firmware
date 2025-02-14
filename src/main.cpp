@@ -11,6 +11,8 @@
 #include "sensor/Sensor.h"
 #include "acuators/Heater.h"
 #include "sensor/BTProbe.h"
+#include "sensor/ETProbe.h"
+#include "sensor/Scale.h"
 
 #include <ArduinoOTA.h>
 #include <esp_task_wdt.h>
@@ -45,27 +47,23 @@ PID ESPPID(&currentTemp, &gOutputPwr, &gTargetTemp, gP, gI, gD, DIRECT);
 
 String deviceId;
 Core::ComponentManager mgr;
-PWMrelay heaterRelay(12, true, 5000);
+PWMrelay heaterRelay(10, true, 5000);
 Actuators::Heater heater("heater", 0.0, 1.0, &heaterRelay);
 Sensor::BTProbe bt;
+Sensor::ETProbe et;
+Sensor::Scale sc(3, 2);
 
 void initDeviceId() {
 #if defined(DEVICE_ID)
   deviceId = DEVICE_ID;
 #else
   char clientId[CLIENT_ID_SIZE];
-  uint32_t nic = ESP.getEfuseMac() >> 40;
-  uint32_t chipid = nic & 0xFF;
-  chipid = chipid << 8;
-  nic = nic >> 8;
-  chipid = chipid | (nic & 0xFF);
-  chipid = chipid << 8;
-  nic = nic >> 8;
-  chipid = chipid | (nic & 0xFF);
+  uint64_t mac = ESP.getEfuseMac();
+  uint32_t chipid = (mac >> 24) & 0xFFFFFF; 
   snprintf(clientId, CLIENT_ID_SIZE, CLIENT_ID_TEMPLATE, chipid);
   deviceId = String(clientId);
 #endif
-}
+}  
 
 const char *getDeviceId() {
   return deviceId.c_str();
@@ -161,6 +159,8 @@ void setup() {
   Net::web.init();
   heater.init();
   bt.init();
+  et.init();
+  sc.init();
   mgr.init();
   heater.setValue(0);
 }

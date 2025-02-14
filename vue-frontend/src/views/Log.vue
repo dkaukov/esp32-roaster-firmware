@@ -8,7 +8,7 @@
 import LogViewer from "@femessage/log-viewer";
 
 export default {
-  name: "log-view",
+  name: "log",
 
   components: {
     LogViewer,

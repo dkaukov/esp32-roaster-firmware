@@ -1,28 +1,22 @@
 <template>
   <div>
     <div class="container" v-if="true">
+
       <div class="section">
-        <div class="columns is-vcentered">
-          <div class="column is-four-fifths has-text-centered">
-            <linear-gauge :value="control.swr.value" :options="control.swr" ref="swr"></linear-gauge>
-            <linear-gauge :value="control.pwr.value" :options="control.pwr" ref="pwr" style="margin-top: -118px"></linear-gauge>
+        <div class="columns is-gapless">
+          <div  class="column">
+              <div class="ml-1">
+                <line-chart :key="'chartBt'" :chart="control.chartBt" :options="noAnimationOptions" ></line-chart>
+              </div>
           </div>
-          <div class="column is-1 has-text-centered">
-            <button class="button is-primary" style="cursor: pointer" @click="sendTuneL" :disabled="this.tuneDisabled">Tune L</button>
-          </div>
-          <div class="column is-1 has-text-centered">
-            <button class="button is-primary" style="cursor: pointer" @click="sendTuneC" :disabled="this.tuneDisabled">Tune C</button>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="columns ml-2">
-            <actuator-card class="ml-2" :key="'card_c1'" :actuator="control.C1" v-if="control.C1.visible"></actuator-card>
-            <actuator-card class="ml-2" :key="'card_l'" :actuator="control.L" v-if="control.L.visible"></actuator-card>
-            <actuator-card class="ml-2" :key="'card_c2'" :actuator="control.C2" v-if="control.C2.visible"></actuator-card>
-            <div class="column"></div>
+          <div  class="column">
+              <div class="ml-1">
+                <line-chart :key="'chartEt'" :chart="control.chartEt" :options="noAnimationOptions"></line-chart>
+              </div>
           </div>
         </div>
       </div>
+
     </div>
     <div class="container" v-else>
       <div class="section">
@@ -47,8 +41,7 @@
 </template>
 
 <script>
-import LinearGauge from "vue-canvas-gauges/src/LinearGauge";
-import ActuatorCard from "@/components/ActuatorCard.vue";
+import LineChart from '@/components/LineChart.vue';
 import EventBus from "@/event-bus.js";
 
 export default {
@@ -57,13 +50,16 @@ export default {
   props: ["cards", "charts", "control"],
 
   components: {
-    LinearGauge,
-    ActuatorCard,
+    LineChart,
   },
 
   data() {
     return {
-      tuneDisabled: !(this.control.status.value === "ready"),
+      isReady: !(this.control.status.value === "ready"),
+      noAnimationOptions: {
+        ...this.options,  // Keep other options
+        animation: false // Disable animation
+      },
     };
   },
 
@@ -93,6 +89,7 @@ export default {
   },
 
   mounted() {
+    /*
     this.$refs.swr.$watch("value", function (newVal, oldVal) {
       if (newVal !== oldVal) {
         this.chart._value = newVal;
@@ -103,6 +100,7 @@ export default {
         this.chart._value = newVal;
       }
     });
+    */
   },
 
   watch: {

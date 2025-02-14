@@ -7,15 +7,11 @@
 #include <pt100rtd.h>
 #include <Arduino.h>
 #include <Wire.h>
+#include <sensor/BTProbe.h>
 
 namespace Sensor {
 
-// The value of the Rref resistor. Use 430.0 for PT100 and 4300.0 for PT1000
-#define RREF      427.0
-
-pt100rtd PT100 = pt100rtd();
-
-class BTProbe : public Sensor {
+class ETProbe : public Sensor {
 
 private:
   MAX31865 &_adc;
@@ -30,9 +26,9 @@ private:
 
 
 public:
-  BTProbe()
-      : Sensor(Core::COMPONENT_CLASS_SENSOR, "BT"), 
-      _adc(getAdc(SS)){};
+  ETProbe()
+      : Sensor(Core::COMPONENT_CLASS_SENSOR, "ET"), 
+      _adc(getAdc(0)){};
 
   void start() {
   }
