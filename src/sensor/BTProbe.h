@@ -32,7 +32,7 @@ private:
 public:
   BTProbe()
       : Sensor(Core::COMPONENT_CLASS_SENSOR, "BT"), 
-      _adc(getAdc(SS)){};
+      _adc(getAdc(BT_CS_PIN)){};
 
   void start() {
   }

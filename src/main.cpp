@@ -1,6 +1,7 @@
 #define HW_INFO "Default"
 
 #include "secrets.h"
+#include "config.h"
 #include <Arduino.h>
 #include "ArduinoJson.h"
 #include <FS.h>
@@ -47,11 +48,11 @@ PID ESPPID(&currentTemp, &gOutputPwr, &gTargetTemp, gP, gI, gD, DIRECT);
 
 String deviceId;
 Core::ComponentManager mgr;
-PWMrelay heaterRelay(10, true, 5000);
+PWMrelay heaterRelay(HEATER_PIN, true, 5000);
 Actuators::Heater heater("heater", 0.0, 1.0, &heaterRelay);
 Sensor::BTProbe bt;
 Sensor::ETProbe et;
-Sensor::Scale sc(3, 2);
+Sensor::Scale sc(X711_DOUT_PIN, X711_SCK_PIN);
 
 void initDeviceId() {
 #if defined(DEVICE_ID)
@@ -143,6 +144,7 @@ void setupWiFi() {
 
 void setup() {
   Serial.begin(115200);
+  rgbLedWrite(LED_PIN, 0, 255, 0);
   delay(1000);
   initDeviceId();
   WiFi.setHostname(getDeviceId());
@@ -163,6 +165,7 @@ void setup() {
   sc.init();
   mgr.init();
   heater.setValue(0);
+  rgbLedWrite(LED_PIN, 0, 0, 255);
 }
 
 void loop() {

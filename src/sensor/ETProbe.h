@@ -28,7 +28,7 @@ private:
 public:
   ETProbe()
       : Sensor(Core::COMPONENT_CLASS_SENSOR, "ET"), 
-      _adc(getAdc(0)){};
+      _adc(getAdc(ET_CS_PIN)){};
 
   void start() {
   }
