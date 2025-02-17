@@ -83,15 +83,17 @@ public:
     }
     if (type == Core::COMMAND_TYPE_ON) {
       _on = true;
-      setValue(1);
+      setValue(0);
       auto node = reply["data"];
       node[_name] = _value;
+      rgbLedWrite(LED_PIN, 255, 0, 0);
     }  
     if (type == Core::COMMAND_TYPE_OFF) {
       setValue(0);
       _on = false;
       auto node = reply["data"];
       node[_name] = _value;
+      rgbLedWrite(LED_PIN, 0, 0, 255);
     }
     if (type == Core::COMMAND_SET_CONTROL_PARAMS) {
        if (!doc["data"][_name].isNull()) {

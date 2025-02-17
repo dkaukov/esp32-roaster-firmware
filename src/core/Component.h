@@ -58,6 +58,7 @@ typedef enum {
   COMMAND_TYPE_GET_DATA,
   COMMAND_TYPE_ON,
   COMMAND_TYPE_OFF,
+  COMMAND_TYPE_TARE,
   COMMAND_SET_CONTROL_PARAMS,
   COMMAND_TYPE_UNKNOWN,
 } command_type_t;
@@ -137,6 +138,9 @@ protected:
     }
     if (cmd == "off") {
       return COMMAND_TYPE_OFF;
+    }
+    if (cmd == "tare") {
+      return COMMAND_TYPE_TARE;
     }
     if (cmd == "setControlParams") {
       return COMMAND_SET_CONTROL_PARAMS;

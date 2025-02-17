@@ -47,7 +47,8 @@ public:
         if (_conversionnCount == 0) {
           _W = _adc.getData();
         } else {
-          _W += 0.1 * (_adc.getData() - _W);
+          //_W += 0.1 * (_adc.getData() - _W);
+          _W = _adc.getData();
         }
         _conversionnCount++;
       }
@@ -57,8 +58,21 @@ public:
     auto node = doc["sensor"][_name];
     node["cnt"] = _conversionnCount;
     node["adc"] = _W;
-    node["W"] = 0.04391*_W - 2.2235;
+    node["W"] = 0.0366*_W + 3.315;
     Sensor::getStatus(doc);
+  };
+
+  virtual void onArtCommand(Core::command_type_t type, const JsonObject &doc, const JsonObject &reply) override {
+    if (type == Core::COMMAND_TYPE_TARE) {
+      _conversionnCount = 0;
+      _W = 0.0;
+      _adc.tareNoDelay();
+      _LOGI(_name, "HX711 Tare requested.");
+    } 
+    if (type == Core::COMMAND_TYPE_GET_DATA) {
+      auto node = reply["data"];
+      node[_name] = 0.0366*_W + 3.315;
+    }  
   };
 
 };    

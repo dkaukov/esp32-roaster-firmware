@@ -144,7 +144,7 @@ void setupWiFi() {
 
 void setup() {
   Serial.begin(115200);
-  rgbLedWrite(LED_PIN, 0, 255, 0);
+  rgbLedWrite(LED_PIN, 255, 255, 255);
   delay(1000);
   initDeviceId();
   WiFi.setHostname(getDeviceId());
