@@ -19,6 +19,8 @@
           <hr class="my-4" style="height: 0px" />
           <div class="px-5"><b>Stack size:</b> &nbsp; {{ stats.stackHighWaterMark }} bytes</div>
           <hr class="my-4" style="height: 0px" />
+          <div class="px-5"><b>Chip Temperature:</b> &nbsp; {{ formatChipTemp(stats.chipTempC) }}</div>
+          <hr class="my-4" style="height: 0px" />
           <div class="px-5"><b>Sketch Hash:</b> &nbsp; {{ stats.sketchHash }}</div>
           <hr class="my-4" style="height: 0px" />
           <div class="px-5"><b>MAC Address:</b> &nbsp; {{ stats.macAddress }}</div>
@@ -72,6 +74,15 @@ export default {
         default:
           return "NaN";
       }
+    },
+  },
+
+  methods: {
+    formatChipTemp(value) {
+      if (value === null || value === undefined || Number.isNaN(value)) {
+        return "Unavailable";
+      }
+      return `${Number(value).toFixed(1)} °C`;
     },
   },
 

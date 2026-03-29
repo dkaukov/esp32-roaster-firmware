@@ -13,6 +13,7 @@
     "@femessage/log-viewer": "^1.5.0",
     "bulma": "0.9.3",
     "bulma-slider": "2.0.4",
+    "canvas-gauges": "^2.1.7",
     "chart.js": "^2.9.3",
     "v-sevenseg": "^1.0.3",
     "vue": "^2.7.16",

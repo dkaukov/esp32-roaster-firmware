@@ -40,6 +40,7 @@ export default {
         minFreeHeap: null,
         maxAllocHeap: null,
         stackHighWaterMark: null,
+        chipTempC: null,
         wifiMode: null,
         hostname: "",
         wifiSignal: null,
@@ -392,6 +393,18 @@ export default {
       }
       return res;
     },
+    appendChartPoint(chart, timestamp, value, windowMs = 10 * 60 * 1000) {
+      chart.x_axis.push(timestamp);
+      chart.y_axis.push(value);
+
+      const cutoff = timestamp - windowMs;
+      const firstVisibleIndex = chart.x_axis.findIndex((pointTs) => pointTs >= cutoff);
+
+      if (firstVisibleIndex > 0) {
+        chart.x_axis = chart.x_axis.slice(firstVisibleIndex);
+        chart.y_axis = chart.y_axis.slice(firstVisibleIndex);
+      }
+    },
     constrain(val, min, max) {
       if (val < min) {
         return min;
@@ -512,22 +525,15 @@ export default {
         this.stats.minFreeHeap = json.system.minFreeHeap;
         this.stats.maxAllocHeap = json.system.maxAllocHeap;
         this.stats.stackHighWaterMark = json.system.stackHighWaterMark;
+        this.stats.chipTempC = json.system.chipTempC;
         this.stats.wifiSignal = json.system.rssi;
         this.home.BT.value = (json.sensor.BT || {}).Tlut;
         this.home.ET.value = (json.sensor.ET || {}).Tlut;
         this.home.W.value = (json.sensor.scale || {}).W;
         
         const now = Date.now();
-        const fiveMinutesAgo = now - 5 * 60 * 1000;
-        this.control.chartBt.x_axis.push(Date.now());
-        this.control.chartBt.y_axis.push((json.sensor.BT || {}).Tlut);
-        this.control.chartEt.x_axis.push(Date.now());
-        this.control.chartEt.y_axis.push((json.sensor.ET || {}).Tlut);
-        // Keep only the last 5 minutes of data
-        this.control.chartBt.x_axis = this.control.chartBt.x_axis.filter(timestamp => timestamp >= fiveMinutesAgo);
-        this.control.chartBt.y_axis = this.control.chartBt.y_axis.slice(-this.control.chartBt.x_axis.length);
-        this.control.chartEt.x_axis = this.control.chartEt.x_axis.filter(timestamp => timestamp >= fiveMinutesAgo);
-        this.control.chartEt.y_axis = this.control.chartEt.y_axis.slice(-this.control.chartEt.x_axis.length);
+        this.appendChartPoint(this.control.chartBt, now, (json.sensor.BT || {}).Tlut);
+        this.appendChartPoint(this.control.chartEt, now, (json.sensor.ET || {}).Tlut);
 
         this.control.C1.value = (json.actuator.C1 || {}).phValue;
         //this.control.C2.value = (json.actuator.C2 || {}).phValue;
