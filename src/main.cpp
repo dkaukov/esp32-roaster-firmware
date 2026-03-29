@@ -13,6 +13,7 @@
 #include "sensor/Sensor.h"
 #include "acuators/Heater.h"
 #include "sensor/BTProbe.h"
+#include "sensor/ChipTemp.h"
 #include "sensor/ETProbe.h"
 #include "sensor/Scale.h"
 
@@ -53,8 +54,9 @@ PWMrelay heaterRelay(HEATER_PIN, true, 5000);
 Actuators::Heater heater("heater", 0.0, 1.0, &heaterRelay);
 Sensor::BTProbe bt;
 Sensor::ETProbe et;
+Sensor::ChipTemp chipTemp;
 Sensor::Scale sc(X711_DOUT_PIN, X711_SCK_PIN);
-Core::StatusLed statusLed(&heater);
+Core::StatusLed statusLed(&heater, &chipTemp);
 
 void initDeviceId() {
 #if defined(DEVICE_ID)
@@ -166,6 +168,7 @@ void setup() {
   heater.init();
   bt.init();
   et.init();
+  chipTemp.init();
   sc.init();
   mgr.init();
   heater.setValue(0);

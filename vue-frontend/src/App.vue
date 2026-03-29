@@ -525,7 +525,11 @@ export default {
         this.stats.minFreeHeap = json.system.minFreeHeap;
         this.stats.maxAllocHeap = json.system.maxAllocHeap;
         this.stats.stackHighWaterMark = json.system.stackHighWaterMark;
-        this.stats.chipTempC = json.system.chipTempC;
+        const chipTempSensor = ((json.sensor || {}).chipTemp || {}).T;
+        this.stats.chipTempC =
+          chipTempSensor !== undefined && chipTempSensor !== null
+            ? chipTempSensor
+            : json.system.chipTempC;
         this.stats.wifiSignal = json.system.rssi;
         this.home.BT.value = (json.sensor.BT || {}).Tlut;
         this.home.ET.value = (json.sensor.ET || {}).Tlut;
@@ -588,6 +592,14 @@ export default {
           command: "buttonClicked",
           id: data.id,
           value: data.value,
+        })
+      );
+    });
+
+    EventBus.$on("tare", () => {
+      Socket.send(
+        JSON.stringify({
+          command: "tare",
         })
       );
     });

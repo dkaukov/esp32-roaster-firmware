@@ -21,6 +21,7 @@
             </div>
             <div class="column has-text-centered">  
               <radial-gauge :options="home.W" :value="home.W.value" ref="w"></radial-gauge>
+              <button class="button is-light is-small mt-3" @click="sendTare">Tare</button>
           </div>
         </div>
 
@@ -55,6 +56,7 @@
 //import TemperatureCard from '@/components/TemperatureCard.vue';
 //import HumdidityCard from '@/components/HumidityCard.vue';
 import StatusCard from "@/components/StatusCard.vue";
+import EventBus from "@/event-bus.js";
 //import ProgressCard from '@/components/ProgressCard.vue';
 //import SliderCard from '@/components/SliderCard.vue';
 //import ButtonCard from '@/components/ButtonCard.vue';
@@ -84,7 +86,11 @@ export default {
     //LineChart
   },
 
-  methods: {},
+  methods: {
+    sendTare() {
+      EventBus.$emit("tare");
+    },
+  },
 
   mounted() {
   },

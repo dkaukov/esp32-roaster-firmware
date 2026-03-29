@@ -269,7 +269,6 @@ public:
     doc["system"]["minFreeHeap"] = ESP.getMinFreeHeap();
     doc["system"]["maxAllocHeap"] = ESP.getMaxAllocHeap();
     doc["system"]["stackHighWaterMark"] = uxTaskGetStackHighWaterMark(NULL);
-    doc["system"]["chipTempC"] = temperatureRead();
     doc["system"]["rssi"] = WiFi.RSSI();
     doc["system"]["upTime"] = (uint32_t)(esp_timer_get_time() / 1000 / 1000);
 

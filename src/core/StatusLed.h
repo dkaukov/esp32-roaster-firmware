@@ -5,6 +5,7 @@
 #include "acuators/Heater.h"
 #include "config.h"
 #include "core/Component.h"
+#include "sensor/ChipTemp.h"
 
 namespace Core {
 
@@ -14,6 +15,7 @@ private:
   static constexpr uint32_t CHIP_TEMP_BLINK_MS = 500;
 
   Actuators::Heater *_heater;
+  Sensor::ChipTemp *_chipTemp;
   uint32_t _lastBlinkMs = 0;
   bool _blinkOn = false;
 
@@ -22,8 +24,8 @@ private:
   }
 
 public:
-  explicit StatusLed(Actuators::Heater *heater)
-      : Component(COMPONENT_CLASS_GENERIC), _heater(heater) {}
+  explicit StatusLed(Actuators::Heater *heater, Sensor::ChipTemp *chipTemp)
+      : Component(COMPONENT_CLASS_GENERIC), _heater(heater), _chipTemp(chipTemp) {}
 
   void setBootColor() const {
     applyColor(255, 255, 255);
@@ -36,7 +38,7 @@ public:
   }
 
   void timer250() override {
-    const float chipTempC = temperatureRead();
+    const float chipTempC = _chipTemp ? _chipTemp->getTemperatureC() : NAN;
     if (chipTempC >= CHIP_TEMP_WARN_C) {
       const uint32_t now = millis();
       if ((now - _lastBlinkMs) >= CHIP_TEMP_BLINK_MS) {
