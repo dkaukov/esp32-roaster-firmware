@@ -49,6 +49,8 @@ public:
 
   virtual int32_t getValue() const override { return _value; };
 
+  bool isOn() const { return _on; }
+
   virtual bool isReady() const override { return true; }
 
   virtual void init() override {
@@ -86,14 +88,12 @@ public:
       setValue(0);
       auto node = reply["data"];
       node[_name] = _value;
-      rgbLedWrite(LED_PIN, 255, 0, 0);
     }  
     if (type == Core::COMMAND_TYPE_OFF) {
       setValue(0);
       _on = false;
       auto node = reply["data"];
       node[_name] = _value;
-      rgbLedWrite(LED_PIN, 0, 0, 255);
     }
     if (type == Core::COMMAND_SET_CONTROL_PARAMS) {
        if (!doc["data"][_name].isNull()) {

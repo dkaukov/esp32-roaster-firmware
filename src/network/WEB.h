@@ -12,6 +12,7 @@ namespace Net {
   WiFiClient net;
 
 #define LOG_BUFF_SIZE (WS_MAX_QUEUED_MESSAGES - 1)
+#define WS_QUEUE_SEND_TICKS 0
 
 void __debug_transport_web_callback(const char *s);
 
@@ -166,7 +167,8 @@ public:
               bzero(msg, len + 1);
               bcopy(data, msg, len);
               msg_packet_t pkt = {.clientId = client->id(), .msg = msg};
-              if (xQueueSend(_msg_queue, &pkt, portMAX_DELAY) != pdPASS) {
+              if (xQueueSend(_msg_queue, &pkt, WS_QUEUE_SEND_TICKS) != pdPASS) {
+                _LOGW("ws", "Dropping websocket message: queue full");
                 free((void *)(msg));
               }
             }
@@ -185,7 +187,8 @@ public:
               bzero(msg, len + 1);
               bcopy(data, msg, len);
               msg_packet_t pkt = {.clientId = client->id(), .msg = msg};
-              if (xQueueSend(_msg_queue, &pkt, portMAX_DELAY) != pdPASS) {
+              if (xQueueSend(_msg_queue, &pkt, WS_QUEUE_SEND_TICKS) != pdPASS) {
+                _LOGW("ws", "Dropping artisan message: queue full");
                 free((void *)(msg));
               }
             }
@@ -253,9 +256,10 @@ public:
     timeval curTime;
     gettimeofday(&curTime, NULL);
     int milli = curTime.tv_usec / 1000;
+    char base[sizeof "2011-10-08T07:07:09"];
     char buf[sizeof "2011-10-08T07:07:09.000Z"];
-    strftime(buf, sizeof buf, "%FT%T", gmtime(&curTime.tv_sec));
-    sprintf(buf, "%s.%dZ", buf, milli);
+    strftime(base, sizeof base, "%FT%T", gmtime(&curTime.tv_sec));
+    snprintf(buf, sizeof buf, "%s.%03dZ", base, milli);
     return buf;
   }
 
@@ -265,6 +269,7 @@ public:
     doc["system"]["minFreeHeap"] = ESP.getMinFreeHeap();
     doc["system"]["maxAllocHeap"] = ESP.getMaxAllocHeap();
     doc["system"]["stackHighWaterMark"] = uxTaskGetStackHighWaterMark(NULL);
+    doc["system"]["chipTempC"] = temperatureRead();
     doc["system"]["rssi"] = WiFi.RSSI();
     doc["system"]["upTime"] = (uint32_t)(esp_timer_get_time() / 1000 / 1000);
 

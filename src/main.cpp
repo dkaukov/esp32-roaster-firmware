@@ -9,6 +9,7 @@
 #include <PID_v1.h>
 #include <debug.h>
 #include "core/Component.h"
+#include "core/StatusLed.h"
 #include "sensor/Sensor.h"
 #include "acuators/Heater.h"
 #include "sensor/BTProbe.h"
@@ -16,6 +17,7 @@
 #include "sensor/Scale.h"
 
 #include <ArduinoOTA.h>
+#include <esp_system.h>
 #include <esp_task_wdt.h>
 #include <esp32-hal-sigmadelta.h>
 #include <PWMrelay.h>
@@ -28,7 +30,6 @@
 #define S_aD 0.0
 #define S_TSET 32.0
 #define S_TBAND 1.5
-
 #define BUF_SIZE 1024
 
 
@@ -53,6 +54,7 @@ Actuators::Heater heater("heater", 0.0, 1.0, &heaterRelay);
 Sensor::BTProbe bt;
 Sensor::ETProbe et;
 Sensor::Scale sc(X711_DOUT_PIN, X711_SCK_PIN);
+Core::StatusLed statusLed(&heater);
 
 void initDeviceId() {
 #if defined(DEVICE_ID)
@@ -74,6 +76,7 @@ const char *getDeviceId() {
 
 void printEnvironment() {
   _LOGI("main", "---");
+  _LOGI("main", "Reset reason: %d", esp_reset_reason());
   _LOGI("main", "Hostname: %s", getDeviceId());
   _LOGI("main", "MAC: %s", WiFi.macAddress().c_str());
   _LOGI("main", "Heap Size: %d", ESP.getHeapSize());
@@ -139,13 +142,14 @@ void setupWiFi() {
 #endif
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     _LOGE("main", "Wifi connection failed!");
+    delay(100);
   }
 }
 
 void setup() {
   Serial.begin(115200);
-  rgbLedWrite(LED_PIN, 255, 255, 255);
-  delay(1000);
+  statusLed.init();
+  statusLed.setBootColor();
   initDeviceId();
   WiFi.setHostname(getDeviceId());
   WiFi.begin("", "");
@@ -165,7 +169,6 @@ void setup() {
   sc.init();
   mgr.init();
   heater.setValue(0);
-  rgbLedWrite(LED_PIN, 0, 0, 255);
 }
 
 void loop() {
