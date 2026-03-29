@@ -80,28 +80,28 @@ static bool __sysLogEnabled = false;
     ESP_LOGW(tag, fmt, ##__VA_ARGS__);                                     \
     if (__sysLogEnabled)                                                   \
       syslog.logf(LOG_WARNING, ARDUHAL_LOG_FORMAT(W, fmt), ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(W, fmt), ##__VA_ARGS__);           \
   }
 #define _LOGI(tag, fmt, ...)                                            \
   {                                                                     \
     ESP_LOGI(tag, fmt, ##__VA_ARGS__);                                  \
     if (__sysLogEnabled)                                                \
       syslog.logf(LOG_INFO, ARDUHAL_LOG_FORMAT(I, fmt), ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(I, fmt), ##__VA_ARGS__);        \
   }
 #define _LOGD(tag, fmt, ...)                                             \
   {                                                                      \
     ESP_LOGD(tag, fmt, ##__VA_ARGS__);                                   \
     if (__sysLogEnabled)                                                 \
       syslog.logf(LOG_DEBUG, ARDUHAL_LOG_FORMAT(D, fmt), ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(D, fmt), ##__VA_ARGS__);         \
   }
 #define _LOGV(tag, fmt, ...)                                             \
   {                                                                      \
     ESP_LOGV(tag, fmt, ##__VA_ARGS__);                                   \
     if (__sysLogEnabled)                                                 \
       syslog.logf(LOG_DEBUG, ARDUHAL_LOG_FORMAT(V, fmt), ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(V, fmt), ##__VA_ARGS__);         \
   }
 
 #else
@@ -114,22 +114,22 @@ static bool __sysLogEnabled = false;
 #define _LOGW(tag, fmt, ...)           \
   {                                    \
     ESP_LOGW(tag, fmt, ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(W, fmt), ##__VA_ARGS__); \
   }
 #define _LOGI(tag, fmt, ...)           \
   {                                    \
     ESP_LOGI(tag, fmt, ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(I, fmt), ##__VA_ARGS__); \
   }
 #define _LOGD(tag, fmt, ...)           \
   {                                    \
     ESP_LOGD(tag, fmt, ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(D, fmt), ##__VA_ARGS__); \
   }
 #define _LOGV(tag, fmt, ...)           \
   {                                    \
     ESP_LOGV(tag, fmt, ##__VA_ARGS__); \
-    debug_log_printf(ARDUHAL_LOG_FORMAT(E, fmt), ##__VA_ARGS__);       \
+    debug_log_printf(ARDUHAL_LOG_FORMAT(V, fmt), ##__VA_ARGS__); \
   }
 
 #endif
