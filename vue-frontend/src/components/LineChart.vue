@@ -11,8 +11,27 @@
 </template>
 
 <script>
-import { Chart } from "chart.js/auto";
+import {
+  CategoryScale,
+  Chart,
+  Filler,
+  LineController,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Tooltip,
+} from "chart.js";
 import { markRaw } from "vue";
+
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Filler,
+);
 
 export default {
   name: "LineChart",
