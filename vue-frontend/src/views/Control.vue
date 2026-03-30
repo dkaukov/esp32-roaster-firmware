@@ -3,15 +3,15 @@
     <div class="container" v-if="true">
 
       <div class="section">
-        <div class="columns is-gapless">
+        <div class="columns is-variable is-3">
           <div  class="column">
               <div class="ml-1">
-                <line-chart :key="'chartBt'" :chart="control.chartBt" :options="noAnimationOptions" ></line-chart>
+                <line-chart ref="chartBt" :key="'chartBt'" :title="control.chartBt.name" :options="noAnimationOptions" ></line-chart>
               </div>
           </div>
           <div  class="column">
               <div class="ml-1">
-                <line-chart :key="'chartEt'" :chart="control.chartEt" :options="noAnimationOptions"></line-chart>
+                <line-chart ref="chartEt" :key="'chartEt'" :title="control.chartEt.name" :options="noAnimationOptions"></line-chart>
               </div>
           </div>
         </div>
@@ -57,13 +57,20 @@ export default {
     return {
       isReady: !(this.control.status.value === "ready"),
       noAnimationOptions: {
-        ...this.options,  // Keep other options
-        animation: false // Disable animation
+        animation: false,
       },
     };
   },
 
   methods: {
+    syncChart(id, chart) {
+      const refName = id === "Bt" ? "chartBt" : "chartEt";
+      const chartRef = this.$refs[refName];
+
+      if (chartRef) {
+        chartRef.setSeries(chart.x_axis || [], chart.y_axis || []);
+      }
+    },
     sendTuneL() {
       this.msg = {
         config: {
@@ -89,18 +96,24 @@ export default {
   },
 
   mounted() {
-    /*
-    this.$refs.swr.$watch("value", function (newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.chart._value = newVal;
+    this.syncChart("Bt", this.control.chartBt);
+    this.syncChart("Et", this.control.chartEt);
+    this.onChartUpdate = ({ id, timestamps, values }) => {
+      const refName = id === "Bt" ? "chartBt" : id === "Et" ? "chartEt" : null;
+      const chartRef = refName ? this.$refs[refName] : null;
+
+      if (chartRef) {
+        chartRef.setSeries(timestamps, values);
       }
-    });
-    this.$refs.pwr.$watch("value", function (newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.chart._value = newVal;
-      }
-    });
-    */
+    };
+    EventBus.$on("chart:update", this.onChartUpdate);
+  },
+
+  beforeUnmount() {
+    if (this.onChartUpdate) {
+      EventBus.$off("chart:update", this.onChartUpdate);
+      this.onChartUpdate = null;
+    }
   },
 
   watch: {

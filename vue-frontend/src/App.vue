@@ -407,6 +407,13 @@ export default {
         chart.y_axis = chart.y_axis.slice(firstVisibleIndex);
       }
     },
+    emitChartUpdate(id, chart) {
+      EventBus.$emit("chart:update", {
+        id,
+        timestamps: [...(chart.x_axis || [])],
+        values: [...(chart.y_axis || [])],
+      });
+    },
     constrain(val, min, max) {
       if (val < min) {
         return min;
@@ -549,6 +556,8 @@ export default {
         const now = Date.now();
         this.appendChartPoint(this.control.chartBt, now, (json.sensor.BT || {}).Tlut);
         this.appendChartPoint(this.control.chartEt, now, (json.sensor.ET || {}).Tlut);
+        this.emitChartUpdate("Bt", this.control.chartBt);
+        this.emitChartUpdate("Et", this.control.chartEt);
 
         this.control.C1.value = (json.actuator.C1 || {}).phValue;
         //this.control.C2.value = (json.actuator.C2 || {}).phValue;
