@@ -17,7 +17,7 @@
         </div>
         <div class="columns">
           <div class="column is-12">
-            <line-chart :chart-data="chartData" :options="options" height="200px"></line-chart>
+            <canvas ref="canvas" height="200"></canvas>
           </div>
         </div>
       </div>
@@ -26,19 +26,25 @@
 </template>
 
 <script>
-import LineChart from "./Charts/LineChart";
+import Chart from "chart.js";
 
 export default {
-  props: ["chart"],
-
-  components: {
-    LineChart,
+  props: {
+    chart: {
+      type: Object,
+      required: true,
+    },
+    options: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
   data() {
     return {
       activity: false,
-      options: {
+      chartInstance: null,
+      baseOptions: {
         animation: false,
         responsive: true,
         aspectRatio: 1,
@@ -46,17 +52,12 @@ export default {
         legend: {
           display: false,
         },
-        downsample: {
-          enabled: true,
-          threshold: 100 // max number of points to display per dataset
-        },
         scales: {
           xAxes: [
             {
               type: "time",
               time: {
-                unit: "minute"
-
+                unit: "minute",
               },
               gridLines: {
                 display: true,
@@ -72,47 +73,88 @@ export default {
     "chart.x_axis": {
       deep: true,
       handler() {
-        if (this.activity === false) {
-          this.activity = true;
-          setTimeout(() => {
-            this.activity = false;
-          }, 100);
-        }
+        this.refreshChart();
       },
     },
     "chart.y_axis": {
       deep: true,
       handler() {
-        if (this.activity === false) {
-          this.activity = true;
-          setTimeout(() => {
-            this.activity = false;
-          }, 100);
-        }
+        this.refreshChart();
       },
     },
   },
 
   computed: {
-    chartData() {
+    mergedOptions() {
       return {
-        labels: this.chart.x_axis,
-        datasets: [
-          {
-            label: "",
-            backgroundColor: "#4c73f5",
-            data: this.chart.y_axis,
-            fill: false,
-          },
-        ],
+        ...this.baseOptions,
+        ...this.options,
+        legend: {
+          ...this.baseOptions.legend,
+          ...(this.options.legend || {}),
+        },
+        scales: {
+          ...this.baseOptions.scales,
+          ...(this.options.scales || {}),
+        },
       };
     },
   },
 
+  methods: {
+    setActivityPulse() {
+      if (this.activity === false) {
+        this.activity = true;
+        setTimeout(() => {
+          this.activity = false;
+        }, 100);
+      }
+    },
+    initChart() {
+      this.chartInstance = new Chart(this.$refs.canvas.getContext("2d"), {
+        type: "line",
+        data: {
+          labels: [...this.chart.x_axis],
+          datasets: [
+            {
+              label: "",
+              backgroundColor: "#4c73f5",
+              borderColor: "#4c73f5",
+              data: [...this.chart.y_axis],
+              fill: false,
+              lineTension: 0,
+              pointRadius: 0,
+            },
+          ],
+        },
+        options: this.mergedOptions,
+      });
+    },
+    refreshChart() {
+      if (!this.chartInstance) {
+        return;
+      }
+
+      this.setActivityPulse();
+      this.chartInstance.data.labels = [...this.chart.x_axis];
+      this.chartInstance.data.datasets[0].data = [...this.chart.y_axis];
+      this.chartInstance.options = this.mergedOptions;
+      this.chartInstance.update(0);
+    },
+  },
+
   mounted() {
+    this.initChart();
     setTimeout(() => {
       this.activity = false;
     }, 500);
+  },
+
+  beforeUnmount() {
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+      this.chartInstance = null;
+    }
   },
 };
 </script>

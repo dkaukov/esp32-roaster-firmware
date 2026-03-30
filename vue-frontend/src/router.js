@@ -1,16 +1,14 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-
-Vue.use(Router);
-
-import Home from './views/Home.vue';
-import Stats from './views/Stats.vue';
-import Log from './views/Log.vue';
-import Control from './views/Control.vue';
+import { createRouter, createWebHashHistory } from "vue-router";
+import Home from "./views/Home.vue";
+import Stats from "./views/Stats.vue";
+import Log from "./views/Log.vue";
+import Control from "./views/Control.vue";
 // import Lock from './views/Lock.vue';
 
-export default new Router({
-  linkActiveClass: 'is-active',
+export default createRouter({
+  history: createWebHashHistory(),
+  linkActiveClass: "is-active",
+  linkExactActiveClass: "is-active",
   routes: [
     /*
     {
@@ -41,4 +39,3 @@ export default new Router({
     }
   ]
 })
-

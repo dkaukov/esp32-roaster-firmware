@@ -6,17 +6,19 @@
       </div>
     </div>
     <div class="section pt-2">
-      <transition name="fade" mode="out-in">
-        <router-view :cards="cards" :charts="charts" :stats="stats" :log="log" :home="home" :control="control" />
-      </transition>
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" :cards="cards" :charts="charts" :stats="stats" :log="log" :home="home" :control="control" />
+        </transition>
+      </router-view>
     </div>
   </div>
 </template>
 
 <script>
 import EventBus from "./event-bus.js";
-import Socket from "./socket";
-import Navbar from "./components/Navbar";
+import Socket from "./socket.js";
+import Navbar from "./components/Navbar.vue";
 
 export default {
   components: {
@@ -429,8 +431,17 @@ export default {
       this.ws.connected = true;
 
       if (json.topic === "log") {
-        EventBus.$emit("logLine", json.message);
-        this.log.lines = this.log.lines + "\n" + json.message;
+        const normalizedLogLine = String(json.message || "")
+          .replace(/\r\n/g, "\n")
+          .replace(/\n+$/g, "");
+
+        EventBus.$emit("logLine", normalizedLogLine);
+
+        if (normalizedLogLine) {
+          this.log.lines = this.log.lines
+            ? `${this.log.lines}\n${normalizedLogLine}`
+            : normalizedLogLine;
+        }
       }
 
       if (json.topic === "config") {

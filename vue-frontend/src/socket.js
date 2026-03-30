@@ -1,42 +1,45 @@
-import Vue from "vue"
+import mitt from "mitt";
 
 
 let host = "ws://" + document.location.host + "/dashws";
 
-if (process.env.NODE_ENV !== 'production') {
+if (!import.meta.env.PROD) {
   host = "ws://rst-544b84.sphere.home/dashws"; // For Local Testing via npm run serve
 }
 
 const socket = new WebSocket(host);
+const emitter = mitt();
 
-const emitter = new Vue({
-  methods: {
-    send(message) {
-      if (1 === socket.readyState)
-        socket.send(message)
+const Socket = {
+  $on: (...args) => emitter.on(...args),
+  $off: (...args) => emitter.off(...args),
+  $emit: (...args) => emitter.emit(...args),
+  send(message) {
+    if (socket.readyState === 1) {
+      socket.send(message);
     }
   }
-});
+};
 
 socket.onopen = function () {
-  emitter.$emit("connected");
+  Socket.$emit("connected");
 };
 
 socket.onclose = function () {
-  emitter.$emit("disconnected");
+  Socket.$emit("disconnected");
 };
 
 socket.onmessage = function (msg) {
-  emitter.$emit("message", JSON.parse(msg.data));
+  Socket.$emit("message", JSON.parse(msg.data));
 };
 socket.onerror = function (err) {
-  emitter.$emit("error", err)
+  Socket.$emit("error", err);
 };
 
 
 let socketInterval = setInterval(() => {
   if (socket.readyState == 0) {
-    emitter.$emit("disconnected");
+    Socket.$emit("disconnected");
   } else if (socket.readyState === 3) {
     location.reload();
   } else {
@@ -44,8 +47,8 @@ let socketInterval = setInterval(() => {
   }
 }, 5000);
 
-if (process.env.NODE_ENV !== 'production') {
+if (!import.meta.env.PROD) {
   clearInterval(socketInterval);
 }
 
-export default emitter
+export default Socket;

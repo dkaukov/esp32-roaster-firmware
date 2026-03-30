@@ -2,32 +2,20 @@
   <div>
     <div class="container" v-if="stats.enabled">
       <div class="card">
-        <div class="card-content py-6">
-          <div class="px-5"><b>Hardware:</b> &nbsp; {{ stats.hardware }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Uptime:</b> &nbsp; {{ stats.upTime }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>SDK Version:</b> &nbsp; {{ stats.sdk }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Chip ID:</b> &nbsp; {{ stats.chipId }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Free Heap:</b> &nbsp; {{ stats.freeHeap }} bytes</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Min. Free Heap:</b> &nbsp; {{ stats.minFreeHeap }} bytes</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Heap Max alloc block:</b> &nbsp; {{ stats.maxAllocHeap }} bytes</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Stack size:</b> &nbsp; {{ stats.stackHighWaterMark }} bytes</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Chip Temperature:</b> &nbsp; {{ formatChipTemp(stats.chipTempC) }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Sketch Hash:</b> &nbsp; {{ stats.sketchHash }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>MAC Address:</b> &nbsp; {{ stats.macAddress }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Host name:</b> &nbsp; {{ stats.hostname }}</div>
-          <hr class="my-4" style="height: 0px" />
-          <div class="px-5"><b>Signal Level (RSSI):</b> &nbsp; {{ stats.wifiSignal }}</div>
+        <div class="card-content stats-content">
+          <div class="stats-row"><span class="stats-label">Hardware:</span><span>{{ compactValue(stats.hardware) }}</span></div>
+          <div class="stats-row"><span class="stats-label">Uptime:</span><span>{{ compactValue(stats.upTime) }}</span></div>
+          <div class="stats-row"><span class="stats-label">SDK Version:</span><span>{{ compactValue(stats.sdk) }}</span></div>
+          <div class="stats-row"><span class="stats-label">Chip ID:</span><span>{{ compactValue(stats.chipId) }}</span></div>
+          <div class="stats-row"><span class="stats-label">Free Heap:</span><span>{{ compactValue(stats.freeHeap) }} bytes</span></div>
+          <div class="stats-row"><span class="stats-label">Min. Free Heap:</span><span>{{ compactValue(stats.minFreeHeap) }} bytes</span></div>
+          <div class="stats-row"><span class="stats-label">Heap Max alloc block:</span><span>{{ compactValue(stats.maxAllocHeap) }} bytes</span></div>
+          <div class="stats-row"><span class="stats-label">Stack size:</span><span>{{ compactValue(stats.stackHighWaterMark) }} bytes</span></div>
+          <div class="stats-row"><span class="stats-label">Chip Temperature:</span><span>{{ formatChipTemp(stats.chipTempC) }}</span></div>
+          <div class="stats-row"><span class="stats-label">Sketch Hash:</span><span>{{ compactValue(stats.sketchHash) }}</span></div>
+          <div class="stats-row"><span class="stats-label">MAC Address:</span><span>{{ compactValue(stats.macAddress) }}</span></div>
+          <div class="stats-row"><span class="stats-label">Host name:</span><span>{{ compactValue(stats.hostname) }}</span></div>
+          <div class="stats-row"><span class="stats-label">Signal Level (RSSI):</span><span>{{ compactValue(stats.wifiSignal) }}</span></div>
         </div>
       </div>
     </div>
@@ -55,7 +43,7 @@
 </template>
 
 <script>
-import Socket from "../socket";
+import Socket from "../socket.js";
 
 export default {
   props: ["stats"],
@@ -78,6 +66,12 @@ export default {
   },
 
   methods: {
+    compactValue(value) {
+      return String(value ?? "")
+        .replace(/\r\n/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    },
     formatChipTemp(value) {
       if (value === null || value === undefined || Number.isNaN(value)) {
         return "Unavailable";
@@ -97,4 +91,28 @@ export default {
 </script>
 
 <style>
+.stats-content {
+  padding: 1.25rem 1.5rem;
+}
+
+.stats-row {
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(43, 53, 79, 0.08);
+  line-height: 1.25;
+  font-size: 0.95rem;
+}
+
+.stats-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.stats-label {
+  min-width: 11rem;
+  font-weight: 700;
+  color: #2b354f;
+}
 </style>

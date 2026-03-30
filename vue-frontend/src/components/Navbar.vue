@@ -18,10 +18,10 @@
 
         <div class="navbar-menu" :class="{ 'is-active': open }">
           <div class="navbar-end">
-            <router-link class="navbar-item" @click.native="open = false" to="/" exact> Overview </router-link>
-            <router-link class="navbar-item" @click.native="open = false" to="/control" exact> Control </router-link>
-            <router-link class="navbar-item" @click.native="open = false" to="/log" exact> Log </router-link>
-            <router-link class="navbar-item" @click.native="open = false" to="/statistics"> Statistics </router-link>
+            <router-link class="navbar-item" @click="open = false" to="/"> Overview </router-link>
+            <router-link class="navbar-item" @click="open = false" to="/control"> Control </router-link>
+            <router-link class="navbar-item" @click="open = false" to="/log"> Log </router-link>
+            <router-link class="navbar-item" @click="open = false" to="/statistics"> Statistics </router-link>
           </div>
         </div>
       </nav>

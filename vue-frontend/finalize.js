@@ -2,26 +2,24 @@ const { gzip } = require('@gfx/zopfli');
 const FS = require('fs');
 const path = require('path');
 
-const BUNDLE_JS = FS.readFileSync(path.resolve(__dirname, './dist/js/app.js'));
+const DIST_DIR = path.resolve(__dirname, './dist');
 
-const HTML = `
-<!DOCTYPE html>
-<html lang=en>
-<head>
-    <meta charset=utf-8>
-    <meta http-equiv=X-UA-Compatible content="IE=edge">
-    <meta name=viewport content="width=device-width,initial-scale=1">
-    <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOV//8Dlf//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA5X//wOV//8AAAAAAAAAAAAAAAAAAAAAAAAAPwAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDlf//A5X//wAAAAAAAAAAAAAAOQOV//8Dlf//AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgOV//8Dlf//AAAAOQOV//8Dlf//A5X//wOV//8AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA5X//wOV//8Dlf//AAAABgAAAAADlf//A5X//wAAAAEAAAAAA5X//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDlf//AAAAAgAAAAAAAAAAAAAAAQOV//8Dlf//A5X//wOV//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARA5X//wOV//8Dlf//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA5X//wOV//8Dlf//A5X//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAD//wAA//8AAJ//AADP/wAA5z8AAPIfAAD4zQAA/eEAAP/xAAD/4QAA//8AAP//AAD//wAA//8AAA==" rel="icon" type="image/x-icon" />
-</head>
-<body>
-    <noscript>
-        <strong>We're sorry but ATU-DASH doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id=app></div>
-    <script defer>${BUNDLE_JS}</script>
-</body>
-</html>
-`;
+function inlineAsset(assetPath, wrap) {
+  const normalizedPath = assetPath.replace(/^\.?\//, '');
+  const absolutePath = path.resolve(DIST_DIR, normalizedPath);
+  const fileContents = FS.readFileSync(absolutePath, 'utf8');
+  return wrap(fileContents);
+}
+
+const HTML = FS.readFileSync(path.resolve(DIST_DIR, 'index.html'), 'utf8')
+  .replace(
+    /<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"[^>]*>/g,
+    (_, assetPath) => inlineAsset(assetPath, (contents) => `<style>${contents}</style>`)
+  )
+  .replace(
+    /<script[^>]+type="module"[^>]+src="([^"]+)"[^>]*><\/script>/g,
+    (_, assetPath) => inlineAsset(assetPath, (contents) => `<script type="module">${contents}</script>`)
+  );
 
 function chunkArray(myArray, chunk_size) {
   let index = 0;

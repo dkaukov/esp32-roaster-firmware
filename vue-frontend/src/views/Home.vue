@@ -65,7 +65,7 @@ import EventBus from "@/event-bus.js";
 //import LineChart from '@/components/LineChart.vue';
 
 //import LinearGauge from "vue-canvas-gauges/src/LinearGauge";
-import RadialGauge from "vue-canvas-gauges/src/RadialGauge";
+import RadialGauge from "@/components/RadialGauge.vue";
 
 export default {
   name: "home",

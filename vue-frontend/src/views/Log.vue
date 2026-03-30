@@ -1,30 +1,50 @@
 <template>
   <div class="container">
-    <log-viewer :log="log.lines" :hasNumber="false" />
+    <div class="log-viewer">
+      <pre>{{ displayLog }}</pre>
+    </div>
   </div>
 </template>
 
 <script>
-import LogViewer from "@femessage/log-viewer";
-
 export default {
   name: "log",
 
-  components: {
-    LogViewer,
-  },
-
-  methods: {},
-
   props: ["log"],
 
-  mounted() {},
+  computed: {
+    displayLog() {
+      return String(this.log.lines || "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\n{2,}/g, "\n");
+    },
+  },
 };
 </script>
 
-<style lang="less">
+<style>
 .log-viewer {
-  font-size: 15px !important;
-  font-family: monospace !important;
+  height: calc(100vh - 11rem);
+  min-height: calc(100vh - 11rem);
+  max-height: calc(100vh - 11rem);
+  overflow: auto;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #0f172a;
+  border-radius: 4px;
+  background: #0a0f1d !important;
+  color: #d6deeb !important;
+  font-size: 13px;
+  line-height: 1.15;
+  font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", monospace;
+}
+
+.log-viewer pre {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  color: inherit !important;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 </style>
