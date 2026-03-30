@@ -1,3 +1,5 @@
+@use "sass:color";
+@use "./variables" as vars;
 
 // Card Itself
 .card {
@@ -21,6 +23,22 @@
   }
 }
 
+.navbar-card .card-content {
+  padding: 0.7rem 1.25rem;
+}
+
+.status-card .card-content {
+  padding: 0.95rem 1.25rem;
+}
+
+.status-card .card-icon {
+  padding: 0.7rem 0.85rem !important;
+}
+
+.status-card .column.is-narrow {
+  flex: 0 0 auto;
+}
+
 .graph-card {
   padding-left: 0;
   padding-right: 0;
@@ -33,7 +51,7 @@
   left: 0;
   top: 0;
   margin: 15px;
-  color: lighten($black, 10%) !important;
+  color: color.adjust(vars.$black, $lightness: 10%) !important;
 }
 
 // Card Activity Dots
@@ -51,19 +69,19 @@
 
 .dot.active {
   display: block;
-  background: $primary;
+  background: vars.$primary;
 }
 
 .dot.waiting {
   display: block;
-  background: $warning;
+  background: vars.$warning;
   animation: waitingdot 2s infinite;
   -webkit-animation: waitingdot 2s infinite;
 }
 
 @keyframes waitingdot {
   0% {
-      background: $warning;
+      background: vars.$warning;
   }
 
   50% {
@@ -71,13 +89,13 @@
   }
 
   100% {
-      background: $warning;
+      background: vars.$warning;
   }
 }
 
 @-webkit-keyframes waitingdot {
   0% {
-      background: $warning;
+      background: vars.$warning;
   }
 
   50% {
@@ -85,6 +103,6 @@
   }
 
   100% {
-      background: $warning;
+      background: vars.$warning;
   }
 }

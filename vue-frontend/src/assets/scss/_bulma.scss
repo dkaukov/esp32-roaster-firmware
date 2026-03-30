@@ -1,0 +1,39 @@
+@use "./variables" as vars;
+
+@forward "bulma/sass/utilities" with (
+  $family-sans-serif: vars.$family-primary,
+  $primary: vars.$primary,
+  $grey-dark: vars.$grey-dark,
+  $black: vars.$black,
+  $text: vars.$text,
+  $light: vars.$light,
+  $dark: vars.$dark,
+  $link: vars.$link,
+  $info: vars.$info,
+  $success: vars.$success,
+  $warning: vars.$warning,
+  $danger: vars.$danger
+);
+
+@forward "bulma/sass/base";
+@forward "bulma/sass/elements";
+@forward "bulma/sass/form";
+@forward "bulma/sass/components/breadcrumb";
+@forward "bulma/sass/components/navbar";
+@forward "bulma/sass/components/menu";
+@forward "bulma/sass/components/card";
+@forward "bulma/sass/components/modal";
+@forward "bulma/sass/grid";
+@forward "bulma/sass/layout/container";
+@forward "bulma/sass/layout/level";
+@forward "bulma/sass/layout/section";
+@forward "bulma/sass/base/skeleton";
+@forward "bulma/sass/helpers";
+
+@use "bulma/sass/themes/light";
+@use "bulma/sass/themes/setup";
+
+:root {
+  @include light.light-theme;
+  @include setup.setup-theme;
+}

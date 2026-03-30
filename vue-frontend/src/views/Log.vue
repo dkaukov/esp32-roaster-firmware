@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="mx-auto max-w-[1220px]">
     <div class="log-viewer">
       <pre>{{ displayLog }}</pre>
     </div>

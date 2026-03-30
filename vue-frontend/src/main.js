@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router.js";
+import "./tailwind.css";
 
 router.beforeEach((to, from, next) => {
   let title = to.name;

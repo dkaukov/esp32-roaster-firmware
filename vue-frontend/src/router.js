@@ -7,8 +7,6 @@ import Control from "./views/Control.vue";
 
 export default createRouter({
   history: createWebHashHistory(),
-  linkActiveClass: "is-active",
-  linkExactActiveClass: "is-active",
   routes: [
     /*
     {

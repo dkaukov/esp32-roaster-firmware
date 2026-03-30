@@ -1,0 +1,28 @@
+@use "sass:color";
+
+@use "bulma/sass/utilities/initial-variables" as bulma-iv;
+@use "bulma/sass/utilities/mixins" as bulma-mx;
+
+@use "./variables" as vars;
+
+$tablet: bulma-iv.$tablet;
+$dark: vars.$dark;
+$black: vars.$black;
+$primary: vars.$primary;
+$warning: vars.$warning;
+
+@mixin touch {
+  @include bulma-mx.breakpoint("touch") {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @include bulma-mx.breakpoint("desktop") {
+    @content;
+  }
+}
+
+@function lighten($value, $amount) {
+  @return color.adjust($value, $lightness: $amount);
+}

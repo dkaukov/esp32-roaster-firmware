@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="container" v-if="stats.enabled">
-      <div class="card">
-        <div class="card-content stats-content">
+    <div v-if="stats.enabled" class="mx-auto max-w-[1220px]">
+      <div class="rounded-[1.6rem] bg-white shadow-[0_0_50px_rgba(232,232,232,0.9)]">
+        <div class="stats-content">
           <div class="stats-row"><span class="stats-label">Hardware:</span><span>{{ compactValue(stats.hardware) }}</span></div>
           <div class="stats-row"><span class="stats-label">Uptime:</span><span>{{ compactValue(stats.upTime) }}</span></div>
           <div class="stats-row"><span class="stats-label">SDK Version:</span><span>{{ compactValue(stats.sdk) }}</span></div>
@@ -19,24 +19,16 @@
         </div>
       </div>
     </div>
-    <div class="section" v-else>
-      <div class="row">
-        <div class="columns is-centered has-text-centered" style="font-weight: 400; font-size: 18px">
-          <div class="column">
-            <div class="sicon sicon-lg align-middle">
-              <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <g id="Stockholm-icons-/-Code-/-Lock-circle" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                  <rect id="bound" x="0" y="0" width="24" height="24"></rect>
-                  <circle id="Oval-5" fill="currentColor" opacity="0.3" cx="12" cy="12" r="10"></circle>
-                  <path d="M14.5,11 C15.0522847,11 15.5,11.4477153 15.5,12 L15.5,15 C15.5,15.5522847 15.0522847,16 14.5,16 L9.5,16 C8.94771525,16 8.5,15.5522847 8.5,15 L8.5,12 C8.5,11.4477153 8.94771525,11 9.5,11 L9.5,10.5 C9.5,9.11928813 10.6192881,8 12,8 C13.3807119,8 14.5,9.11928813 14.5,10.5 L14.5,11 Z M12,9 C11.1715729,9 10.5,9.67157288 10.5,10.5 L10.5,11 L13.5,11 L13.5,10.5 C13.5,9.67157288 12.8284271,9 12,9 Z" id="Combined-Shape" fill="currentColor"></path>
-                </g>
-              </svg>
-            </div>
-            <br />
-            <br />
-            Stats are disabled
-          </div>
-        </div>
+    <div v-else class="mx-auto max-w-[1220px] py-10 text-center text-lg font-normal text-slate-700">
+      <div>
+        <svg class="mx-auto h-16 w-16 align-middle text-slate-500" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g id="Stockholm-icons-/-Code-/-Lock-circle" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <rect id="bound" x="0" y="0" width="24" height="24"></rect>
+            <circle id="Oval-5" fill="currentColor" opacity="0.3" cx="12" cy="12" r="10"></circle>
+            <path d="M14.5,11 C15.0522847,11 15.5,11.4477153 15.5,12 L15.5,15 C15.5,15.5522847 15.0522847,16 14.5,16 L9.5,16 C8.94771525,16 8.5,15.5522847 8.5,15 L8.5,12 C8.5,11.4477153 8.94771525,11 9.5,11 L9.5,10.5 C9.5,9.11928813 10.6192881,8 12,8 C13.3807119,8 14.5,9.11928813 14.5,10.5 L14.5,11 Z M12,9 C11.1715729,9 10.5,9.67157288 10.5,10.5 L10.5,11 L13.5,11 L13.5,10.5 C13.5,9.67157288 12.8284271,9 12,9 Z" id="Combined-Shape" fill="currentColor"></path>
+          </g>
+        </svg>
+        <div class="mt-4">Stats are disabled</div>
       </div>
     </div>
   </div>

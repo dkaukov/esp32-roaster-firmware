@@ -1,16 +1,15 @@
 <template>
-  <div>
-    <div class="section pt-1">
-      <div class="container mt-6">
-        <navbar />
-      </div>
-    </div>
-    <div class="section pt-2">
-      <router-view v-slot="{ Component }">
-        <transition name="fade" mode="out-in">
-          <component :is="Component" :cards="cards" :charts="charts" :stats="stats" :log="log" :home="home" :control="control" />
-        </transition>
-      </router-view>
+  <div class="min-h-screen bg-white px-4 pb-8 pt-4 md:px-8 md:pt-6">
+    <div class="mx-auto max-w-[1280px]">
+      <navbar />
+
+      <main class="pt-6 md:pt-8">
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" :cards="cards" :charts="charts" :stats="stats" :log="log" :home="home" :control="control" />
+          </transition>
+        </router-view>
+      </main>
     </div>
   </div>
 </template>
@@ -638,5 +637,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./assets/scss/main.scss";
+@use "./assets/scss/main.scss";
 </style>

@@ -1,36 +1,8 @@
 @charset "utf-8";
 
-// Custom User Variables
-@import './variables';
-
-// Bulma.io SCSS Files
-@import 'bulma/sass/utilities/_all';
-
-// Base Styles
-@import 'bulma/sass/base/_all';
-@import 'bulma/sass/elements/_all';
-@import 'bulma/sass/form/_all';
-
-// Components
-@import 'bulma/sass/components/breadcrumb';
-@import 'bulma/sass/components/navbar';
-@import 'bulma/sass/components/menu';
-@import 'bulma/sass/components/level';
-@import 'bulma/sass/components/card';
-@import 'bulma/sass/components/modal';
-
-// Layout
-@import 'bulma/sass/grid/_all';
-@import 'bulma/sass/helpers/_all';
-@import 'bulma/sass/layout/_all';
-
-// Custom Styles
-@import './navbar';
-@import './layout';
-@import './button';
-@import './card';
-@import './icon';
-@import './transitions';
+@use "./card";
+@use "./icon";
+@use "./transitions";
 
 html,
 body {
@@ -48,10 +20,6 @@ h6 {
 
 input{
     box-shadow: none !important;
-}
-
-.align-middle {
-    vertical-align: middle;
 }
 
 .spinner {
