@@ -34,10 +34,9 @@
 </template>
 
 <script>
-import EventBus from "@/event-bus.js";
-
 export default {
   props: ["card"],
+  inject: ["roasterActions"],
 
   data() {
     return {
@@ -47,7 +46,7 @@ export default {
 
   methods: {
     sendClickEvent() {
-      EventBus.$emit("buttonClicked", { id: this.card.id, value: !this.card.value });
+      this.roasterActions?.buttonClicked(this.card.id, !this.card.value);
       this.activity = true;
       setTimeout(() => {
         this.activity = false;

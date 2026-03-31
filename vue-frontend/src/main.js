@@ -3,10 +3,8 @@ import App from "./App.vue";
 import router from "./router.js";
 import "./tailwind.css";
 
-router.beforeEach((to, from, next) => {
-  let title = to.name;
-  document.title = title + " - ESP32-Roaster";
-  next();
+router.afterEach((to) => {
+  document.title = `${to.name} - ESP32-Roaster`;
 });
 
 createApp(App).use(router).mount("#app");

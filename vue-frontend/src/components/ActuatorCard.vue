@@ -35,11 +35,11 @@
 </template>
 
 <script>
-import EventBus from "@/event-bus.js";
 import VSevenseg from "v-sevenseg/src/components/VSevenseg.vue";
 
 export default {
   props: ["actuator"],
+  inject: ["roasterActions"],
 
   components: {
     VSevenseg,
@@ -64,7 +64,7 @@ export default {
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].pct = this.pct / 1000;
-      EventBus.$emit("actuate", this.msg);
+      this.roasterActions?.actuate(this.msg.actuator);
     },
     sendCalibrate() {
       this.msg = {
@@ -73,7 +73,7 @@ export default {
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].calibrate = true;
-      EventBus.$emit("actuate", this.msg);
+      this.roasterActions?.actuate(this.msg.actuator);
     },
     sendStepUp() {
       this.msg = {
@@ -82,7 +82,7 @@ export default {
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].value = this.actuator.rawValue + this.actuator.step;
-      EventBus.$emit("actuate", this.msg);
+      this.roasterActions?.actuate(this.msg.actuator);
     },
     sendStepDown() {
       this.msg = {
@@ -91,7 +91,7 @@ export default {
       this.actuator.isReady = false;
       this.msg.actuator[this.actuator.id] = {};
       this.msg.actuator[this.actuator.id].value = this.actuator.rawValue - this.actuator.step;
-      EventBus.$emit("actuate", this.msg);
+      this.roasterActions?.actuate(this.msg.actuator);
     },
   },
 

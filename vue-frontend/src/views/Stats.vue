@@ -35,10 +35,9 @@
 </template>
 
 <script>
-import Socket from "../socket.js";
-
 export default {
   props: ["stats"],
+  inject: ["roasterActions"],
 
   computed: {
     getWifiMode() {
@@ -73,11 +72,7 @@ export default {
   },
 
   mounted() {
-    Socket.send(
-      JSON.stringify({
-        command: "getStats",
-      })
-    );
+    this.roasterActions?.requestStats();
   },
 };
 </script>

@@ -52,7 +52,6 @@
 //import TemperatureCard from '@/components/TemperatureCard.vue';
 //import HumdidityCard from '@/components/HumidityCard.vue';
 import StatusCard from "@/components/StatusCard.vue";
-import EventBus from "@/event-bus.js";
 //import ProgressCard from '@/components/ProgressCard.vue';
 //import SliderCard from '@/components/SliderCard.vue';
 //import ButtonCard from '@/components/ButtonCard.vue';
@@ -66,7 +65,8 @@ import RadialGauge from "@/components/RadialGauge.vue";
 export default {
   name: "home",
 
-  props: ["cards", "charts", "home"],
+  props: ["home"],
+  inject: ["roasterActions"],
 
   components: {
     //GenericCard,
@@ -84,7 +84,7 @@ export default {
 
   methods: {
     sendTare() {
-      EventBus.$emit("tare");
+      this.roasterActions?.tare();
     },
   },
 

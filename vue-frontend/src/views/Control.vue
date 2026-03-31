@@ -30,12 +30,12 @@
 
 <script>
 import LineChart from '@/components/LineChart.vue';
-import EventBus from "@/event-bus.js";
 
 export default {
   name: "control",
 
-  props: ["cards", "charts", "control"],
+  props: ["control"],
+  inject: ["chartUpdates"],
 
   components: {
     LineChart,
@@ -43,7 +43,6 @@ export default {
 
   data() {
     return {
-      isReady: !(this.control.status.value === "ready"),
       noAnimationOptions: {
         animation: false,
       },
@@ -59,34 +58,12 @@ export default {
         chartRef.setSeries(chart.x_axis || [], chart.y_axis || []);
       }
     },
-    sendTuneL() {
-      this.msg = {
-        config: {
-          atu: {
-            tuningMode: "ATU_TUNING_TYPE_L",
-          },
-        },
-      };
-      this.tuneDisabled = true;
-      EventBus.$emit("tune", this.msg);
-    },
-    sendTuneC() {
-      this.msg = {
-        config: {
-          atu: {
-            tuningMode: "ATU_TUNING_TYPE_C",
-          },
-        },
-      };
-      this.tuneDisabled = true;
-      EventBus.$emit("tune", this.msg);
-    },
   },
 
   mounted() {
     this.syncChart("Bt", this.control.chartBt);
     this.syncChart("Et", this.control.chartEt);
-    this.onChartUpdate = ({ id, timestamps, values }) => {
+    this.handleChartUpdate = ({ id, timestamps, values }) => {
       const refName = id === "Bt" ? "chartBt" : id === "Et" ? "chartEt" : null;
       const chartRef = refName ? this.$refs[refName] : null;
 
@@ -94,20 +71,16 @@ export default {
         chartRef.setSeries(timestamps, values);
       }
     };
-    EventBus.$on("chart:update", this.onChartUpdate);
+    this.unsubscribeBt = this.chartUpdates?.subscribe("Bt", this.handleChartUpdate);
+    this.unsubscribeEt = this.chartUpdates?.subscribe("Et", this.handleChartUpdate);
   },
 
   beforeUnmount() {
-    if (this.onChartUpdate) {
-      EventBus.$off("chart:update", this.onChartUpdate);
-      this.onChartUpdate = null;
-    }
-  },
-
-  watch: {
-    "control.status.value": function () {
-      this.tuneDisabled = !(this.control.status.value === "ready");
-    },
+    this.unsubscribeBt?.();
+    this.unsubscribeEt?.();
+    this.unsubscribeBt = null;
+    this.unsubscribeEt = null;
+    this.handleChartUpdate = null;
   },
 };
 </script>

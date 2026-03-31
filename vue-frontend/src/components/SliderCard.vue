@@ -32,10 +32,9 @@
 </template>
 
 <script>
-import EventBus from "@/event-bus.js";
-
 export default {
   props: ["card"],
+  inject: ["roasterActions"],
 
   data() {
     return {
@@ -61,7 +60,7 @@ export default {
         value: this.displayValue,
       };
 
-      EventBus.$emit("sliderChanged", this.msg);
+      this.roasterActions?.sliderChanged(this.msg.id, this.msg.value);
     },
   },
 
