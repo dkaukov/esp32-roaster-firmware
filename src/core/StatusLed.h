@@ -28,11 +28,11 @@ public:
       : Component(COMPONENT_CLASS_GENERIC), _heater(heater), _chipTemp(chipTemp) {}
 
   void setBootColor() const {
-    applyColor(0, 0, 0);
-    delay(10);
-    applyColor(255, 255, 10);
-    delay(10);
-    applyColor(255, 255, 10);
+    // ESP32-C3 / rgbLedWrite(): first frame after boot can be ignored.
+    // Send a dummy black frame, then wait briefly before the real color.
+    applyColor(0, 0, 0); 
+    delayMicroseconds(100);
+    applyColor(255, 255, 10); 
   }
 
   void init() override {
