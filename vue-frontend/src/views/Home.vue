@@ -13,15 +13,17 @@
           <div class="flex justify-center">
             <radial-gauge :options="home.ET" :value="home.ET.value" ref="et"></radial-gauge>
           </div>
-          <div class="flex flex-col items-center">
-            <radial-gauge :options="home.W" :value="home.W.value" ref="w"></radial-gauge>
-            <button
-              type="button"
-              class="mt-3 inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-100"
-              @click="sendTare"
-            >
-              Tare
-            </button>
+          <div class="flex justify-center">
+            <div class="relative inline-block">
+              <radial-gauge :options="home.W" :value="home.W.value" ref="w"></radial-gauge>
+              <button
+                type="button"
+                class="absolute left-1/2 top-[68%] inline-flex -translate-x-1/2 -translate-y-1/2 items-center rounded-[1.15rem] border border-slate-200 bg-white/95 px-3 py-1.5 text-sm font-medium text-slate-600 shadow-sm backdrop-blur transition hover:border-slate-300 hover:bg-slate-50"
+                @click="sendTare"
+              >
+                Tare
+              </button>
+            </div>
           </div>
         </div>
       </section>

@@ -53,6 +53,11 @@ public:
 
   virtual bool isReady() const override { return true; }
 
+  virtual void getStatus(JsonObject &doc) const override {
+    Actuator::getStatus(doc);
+    doc["actuator"][_name]["isOn"] = _on;
+  }
+
   virtual void init() override {
     
   };
