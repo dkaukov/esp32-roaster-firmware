@@ -44,7 +44,8 @@ export default {
   border: 0;
   background: transparent !important;
   color: inherit !important;
-  white-space: pre-wrap;
-  word-break: break-word;
+  white-space: pre;
+  word-break: normal;
+  min-width: max-content;
 }
 </style>
