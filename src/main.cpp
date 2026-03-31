@@ -151,7 +151,6 @@ void setupWiFi() {
 void setup() {
   Serial.begin(115200);
   statusLed.init();
-  statusLed.setBootColor();
   initDeviceId();
   WiFi.setHostname(getDeviceId());
   WiFi.begin("", "");

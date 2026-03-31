@@ -28,13 +28,15 @@ public:
       : Component(COMPONENT_CLASS_GENERIC), _heater(heater), _chipTemp(chipTemp) {}
 
   void setBootColor() const {
-    applyColor(255, 255, 255);
-    applyColor(255, 255, 255);
-    applyColor(255, 255, 255);
+    applyColor(0, 0, 0);
+    delay(10);
+    applyColor(255, 255, 10);
+    delay(10);
+    applyColor(255, 255, 10);
   }
 
   void init() override {
-    timer250();
+    setBootColor();
   }
 
   void timer250() override {
